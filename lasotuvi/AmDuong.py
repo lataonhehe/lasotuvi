@@ -265,44 +265,64 @@ def canChiNgay(nn, tt, nnnn, duongLich=True, timeZone=7, thangNhuan=False):
     return [canNgay, chiNgay]
 
 
-def canChiGio(canNgay, gio):
-    """Phần này có lẽ chưa cần thiết và sẽ bổ sung sau.
+def canChiGio(canNgay, gioTrongNgay, phut=0):
+    """Tính can chi của giờ dựa trên can ngày và giờ thực tế có phút
 
     Args:
-        canNgay (int): Can của ngày cần xem, 1: Giáp, 2: Ất, 3: Bính,...
-        gio (int): Chi của giờ, 1: Tý, 2: Sửu,...
+        canNgay (int): Can của ngày (1: Giáp, ..., 10: Quý)
+        gioTrongNgay (int): Giờ trong ngày (0–23)
+        phut (int): Phút (0–59)
 
     Returns:
-        TYPE: Description
+        list: [canGio, chiGio] - chỉ số (1–10 và 1–12)
     """
-    return False
+
+    if not (1 <= canNgay <= 10 and 0 <= gioTrongNgay <= 23 and 0 <= phut <= 59):
+        raise ValueError("Giá trị không hợp lệ: can (1–10), giờ (0–23), phút (0–59)")
+
+    # Chuyển giờ + phút thành chi giờ (0–11)
+    total_minutes = gioTrongNgay * 60 + phut
+    chiGioIndex = total_minutes // 120  # Mỗi chi giờ = 2 tiếng = 120 phút
+    if chiGioIndex >= 12:
+        chiGioIndex = 0  # Nếu quá 22:59 → vòng về Tý
+
+    # Tính can giờ
+    canGioIndex = (2 * (canNgay - 1) + chiGioIndex) % 10
+
+    return [canGioIndex + 1, chiGioIndex + 1]
+
 
 
 def ngayThangNamCanChi(nn, tt, nnnn, duongLich=True, timeZone=7):
-    """chuyển đổi năm, tháng âm/dương lịch sang Can, Chi trong tiếng Việt.
-    Không tính đến can ngày vì phải chuyển đổi qua lịch Julius.
-
-    Hàm tìm can ngày là hàm canChiNgay(nn, tt, nnnn, duongLich=True,\
-                                    timeZone=7, thangNhuan=False)
+    """Chuyển đổi ngày, tháng, năm sang Can, Chi (nếu âm lịch) trong tiếng Việt.
+    Không tính đến Can của ngày vì cần lịch Julius.
 
     Args:
         nn (int): Ngày
         tt (int): Tháng
         nnnn (int): Năm
+        duongLich (bool): Nếu True thì chuyển đổi sang âm lịch
+        timeZone (int): Múi giờ, mặc định là 7 (Việt Nam)
 
     Returns:
-        TYPE: Description
+        list: [canThang, chiThang, canNam, chiNam] (dưới dạng số: 1–10, 1–12)
     """
+
     if duongLich is True:
-        [nn, tt, nnnn, thangNhuan] = \
-            ngayThangNam(nn, tt, nnnn, timeZone=timeZone)
-    # Can của tháng
+        [nn, tt, nnnn, thangNhuan] = ngayThangNam(nn, tt, nnnn, timeZone=timeZone)
+
+    # Can của tháng: Công thức gần đúng
     canThang = (nnnn * 12 + tt + 3) % 10 + 1
-    # Can chi của năm
-    canNamSinh = (nnnn + 6) % 10 + 1
+
+    # Chi của tháng: tháng 1 âm lịch là Dần (3), tháng 2 là Mão (4), ...
+    chiThang = (tt + 1) % 12 + 1  # Vì Dần = 3 → tt = 1 → 2 + 1 = 3
+
+    # Can Chi của năm
+    canNam = (nnnn + 6) % 10 + 1
     chiNam = (nnnn + 8) % 12 + 1
 
-    return [canThang, canNamSinh, chiNam]
+    return [canThang, chiThang, canNam, chiNam]
+
 
 
 def nguHanh(tenHanh):
@@ -429,13 +449,13 @@ def dichCung(cungBanDau, *args):
     cungSauKhiDich = int(cungBanDau)
     for soCungDich in args:
         cungSauKhiDich += int(soCungDich)
-    if cungSauKhiDich % 12 is 0:
+    if cungSauKhiDich % 12 == 0:
         return 12
     return cungSauKhiDich % 12
 
 
 def khoangCachCung(cung1, cung2, chieu=1):
-    if chieu is 1:  # Con trai, chiều dương
+    if chieu == 1:  # Con trai, chiều dương
         return (cung1 - cung2 + 12) % 12
     else:
         return (cung2 - cung1 + 12) % 12
@@ -444,7 +464,7 @@ def khoangCachCung(cung1, cung2, chieu=1):
 def timCuc(viTriCungMenhTrenDiaBan, canNamSinh):
     canThangGieng = (canNamSinh * 2 + 1) % 10
     canThangMenh = ((viTriCungMenhTrenDiaBan - 3) % 12 + canThangGieng) % 10
-    if canThangMenh is 0:
+    if canThangMenh == 0:
         canThangMenh = 10
     return nguHanhNapAm(viTriCungMenhTrenDiaBan, canThangMenh)
 
@@ -470,7 +490,7 @@ def timTuVi(cuc, ngaySinhAmLich):
         cuc += cucBanDau
         cungDan += 1  # Dịch vị trí cung Dần
     saiLech = cuc - ngaySinhAmLich
-    if saiLech % 2 is 1:
+    if saiLech % 2 == 1:
         saiLech = -saiLech  # Nếu sai lệch là chẵn thì tiến, lẻ thì lùi
     return dichCung(cungDan, saiLech)
 
@@ -521,12 +541,20 @@ def timHoaLinh(chiNamSinh, gioSinh, gioiTinh, amDuongNamSinh):
         raise Exception("Không thể khởi cung tìm Hỏa-Linh")
     # print khoiCungHoaTinh, khoiCungLinhTinh
 
+    # Khởi tạo biến mặc định
+    viTriHoaTinh = None
+    viTriLinhTinh = None
+
     if (gioiTinh * amDuongNamSinh) == -1:
         viTriHoaTinh = dichCung(khoiCungHoaTinh + 1, (-1) * gioSinh)
         viTriLinhTinh = dichCung(khoiCungLinhTinh - 1, gioSinh)
     elif (gioiTinh * amDuongNamSinh) == 1:
         viTriHoaTinh = dichCung(khoiCungHoaTinh - 1, gioSinh)
         viTriLinhTinh = dichCung(khoiCungLinhTinh + 1, (-1) * gioSinh)
+    else:
+        # Trường hợp mặc định nếu không thỏa mãn điều kiện nào
+        viTriHoaTinh = dichCung(khoiCungHoaTinh, gioSinh)
+        viTriLinhTinh = dichCung(khoiCungLinhTinh, gioSinh)
 
     return [viTriHoaTinh, viTriLinhTinh]
 
