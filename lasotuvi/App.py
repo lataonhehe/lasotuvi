@@ -2,7 +2,7 @@
 """
 (c) 2016 doanguyen <dungnv2410@gmail.com>.
 """
-from lasotuvi.AmDuong import (dichCung, ngayThangNam, ngayThangNamCanChi, nguHanh,
+from lasotuvi.AmDuong import (dichCung, ngayThangNam,canChiGio, ngayThangNamCanChi, nguHanh,
                      nguHanhNapAm, thienCan, timCoThan, timCuc, timHoaLinh,
                      timLuuTru, timPhaToai, timThienKhoi, timThienMa,
                      timThienQuanThienPhuc, timTrangSinh, timTriet, timTuVi,
@@ -37,10 +37,12 @@ def lapDiaBan(diaBan, nn, tt, nnnn, gioSinh, gioiTinh, duongLich, timeZone):
     if duongLich is True:
         nn, tt, nnnn, thangNhuan = \
             ngayThangNam(nn, tt, nnnn, duongLich, timeZone)
-    canThang, canNam, chiNam = \
+    canNgay, chiNgay, canThang, chiThang, canNam, chiNam = \
         ngayThangNamCanChi(nn, tt, nnnn, False, timeZone)
+    
+    canGio, chiGio = canChiGio(canNgay, gioSinh)
 
-    diaBan = diaBan(tt, gioSinh)
+    diaBan = diaBan(chiThang, chiGio)
 
     amDuongNamSinh = thienCan[canNam]["amDuong"]
     amDuongChiNamSinh = diaChi[chiNam]["amDuong"]

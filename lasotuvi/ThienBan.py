@@ -2,7 +2,7 @@
 """
 (c) 2016 doanguyen <dungnv2410@gmail.com>.
 """
-from lasotuvi.AmDuong import (canChiNgay, diaChi, ngayThangNam, ngayThangNamCanChi,
+from lasotuvi.AmDuong import (canChiNgay, canChiGio, diaChi, ngayThangNam, ngayThangNamCanChi,
                      nguHanh, nguHanhNapAm, thienCan, timCuc, sinhKhac)
 import time
 from lasotuvi.Lich_HND import jdFromDate
@@ -14,15 +14,6 @@ class lapThienBan(object):
         super(lapThienBan, self).__init__()
         self.gioiTinh = 1 if gioiTinh == 1 else -1
         self.namNu = "Nam" if gioiTinh == 1 else "Nữ"
-
-        chiGioSinh = diaChi[gioSinh]
-        canGioSinh = ((jdFromDate(nn, tt, nnnn) - 1) * 2 % 10 + gioSinh) % 10
-        if canGioSinh == 0:
-            canGioSinh = 10
-        self.chiGioSinh = chiGioSinh
-        self.canGioSinh = canGioSinh
-        self.gioSinh = "{} {}".format(thienCan[canGioSinh]['tenCan'],
-                                      chiGioSinh['tenChi'])
 
         self.timeZone = timeZone
         self.today = time.strftime("%d/%m/%Y")
@@ -36,20 +27,28 @@ class lapThienBan(object):
             self.ngayAm, self.thangAm, self.namAm = self.ngayDuong,\
                 self.thangDuong, self.namDuong
 
-        self.canThang, self.canNam, self.chiNam = \
+        self.canNgay, self.chiNgay, self.canThang, self.chiThang, self.canNam, self.chiNam = \
             ngayThangNamCanChi(self.ngayAm, self.thangAm,
                                self.namAm, False, self.timeZone)
-        self.chiThang = self.thangAm
-        self.canThangTen = thienCan[self.canThang]['tenCan']
-        self.canNamTen = thienCan[self.canNam]['tenCan']
-        self.chiThangTen = diaChi[self.thangAm]['tenChi']
-        self.chiNamTen = diaChi[self.chiNam]['tenChi']
 
-        self.canNgay, self.chiNgay = canChiNgay(
-            self.ngayDuong, self.thangDuong, self.namDuong,
-            duongLich, timeZone)
         self.canNgayTen = thienCan[self.canNgay]['tenCan']
         self.chiNgayTen = diaChi[self.chiNgay]['tenChi']
+        self.canThangTen = thienCan[self.canThang]['tenCan']
+        self.chiThangTen = diaChi[self.chiThang]['tenChi']
+        self.canNamTen = thienCan[self.canNam]['tenCan']
+        self.chiNamTen = diaChi[self.chiNam]['tenChi']
+
+
+        canGioSinh, chiGioSinh = canChiGio(self.canNgay, gioSinh)
+        if canGioSinh == 0:
+            canGioSinh = 10
+        chiGioSinh = diaChi[chiGioSinh]
+        canGioSinh = thienCan[canGioSinh]
+        
+        self.chiGioSinh = chiGioSinh
+        self.canGioSinh = canGioSinh
+        self.gioSinh = "{} {}".format(canGioSinh['tenCan'],
+                                      chiGioSinh['tenChi'])         
 
         cungAmDuong = 1 if (diaBan.cungMenh % 2 == 1) else -1
         self.amDuongNamSinh = "Dương" if (self.chiNam % 2 == 1) else "Âm"

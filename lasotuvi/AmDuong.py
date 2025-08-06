@@ -289,7 +289,7 @@ def canChiGio(canNgay, gioTrongNgay, phut=0):
     # Tính can giờ
     canGioIndex = (2 * (canNgay - 1) + chiGioIndex) % 10
 
-    return [canGioIndex + 1, chiGioIndex + 1]
+    return [int(canGioIndex + 1), int(chiGioIndex + 1)]
 
 
 
@@ -307,6 +307,8 @@ def ngayThangNamCanChi(nn, tt, nnnn, duongLich=True, timeZone=7):
     Returns:
         list: [canThang, chiThang, canNam, chiNam] (dưới dạng số: 1–10, 1–12)
     """
+    # Tính can chi ngày dùng hàm canChiNgay
+    [canNgay, chiNgay] = canChiNgay(nn, tt, nnnn, duongLich, timeZone)
 
     if duongLich is True:
         [nn, tt, nnnn, thangNhuan] = ngayThangNam(nn, tt, nnnn, timeZone=timeZone)
@@ -321,7 +323,7 @@ def ngayThangNamCanChi(nn, tt, nnnn, duongLich=True, timeZone=7):
     canNam = (nnnn + 6) % 10 + 1
     chiNam = (nnnn + 8) % 12 + 1
 
-    return [canThang, chiThang, canNam, chiNam]
+    return [canNgay, chiNgay, canThang, chiThang, canNam, chiNam]
 
 
 
