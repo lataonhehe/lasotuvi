@@ -105,3 +105,7 @@ tags
 _pycache
 .mypy*
 .idea/
+# Python distribution / packaging
+dist/
+build/
+*.egg-info/

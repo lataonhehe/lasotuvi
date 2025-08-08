@@ -34,15 +34,17 @@ from lasotuvi.Sao import (saoAnQuang, saoBachHo, saoBacSy, saoBatToa, saoBenh,
 
 
 def lapDiaBan(diaBan, nn, tt, nnnn, gioSinh, gioiTinh, duongLich, timeZone):
+    canNgay, chiNgay, canThang, chiThang, canNam, chiNam = \
+        ngayThangNamCanChi(nn, tt, nnnn, duongLich, timeZone)
+
     if duongLich is True:
         nn, tt, nnnn, thangNhuan = \
             ngayThangNam(nn, tt, nnnn, duongLich, timeZone)
-    canNgay, chiNgay, canThang, chiThang, canNam, chiNam = \
-        ngayThangNamCanChi(nn, tt, nnnn, False, timeZone)
     
     canGio, chiGio = canChiGio(canNgay, gioSinh)
 
-    diaBan = diaBan(chiThang, chiGio)
+    #Tạo địa bàn tháng âm lịch, giờ âm lịch
+    diaBan = diaBan(tt, chiGio)
 
     amDuongNamSinh = thienCan[canNam]["amDuong"]
     amDuongChiNamSinh = diaChi[chiNam]["amDuong"]
