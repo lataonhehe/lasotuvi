@@ -97,7 +97,7 @@ def inLaSoTuViTongHop(ngay, thang, nam, gio, gioiTinh, ten, duongLich=True, time
         print_info("Can Chi năm", f"{thienban.canNamTen} {thienban.chiNamTen}")
         print_info("Can Chi tháng", f"{thienban.canThangTen} {thienban.chiThangTen}")
         print_info("Can Chi ngày", f"{thienban.canNgayTen} {thienban.chiNgayTen}")
-        print_info("Can Chi giờ", f"{thienban.canGioSinh} {thienban.chiGioSinh['tenChi']}")
+        print_info("Can Chi giờ", f"{thienban.canGioSinh['tenCan']} {thienban.chiGioSinh['tenChi']}")
         
         # Thông tin mệnh
         print_section("THÔNG TIN MỆNH", Colors.YELLOW)
@@ -111,13 +111,6 @@ def inLaSoTuViTongHop(ngay, thang, nam, gio, gioiTinh, ten, duongLich=True, time
         print_section("THÔNG TIN CỤC", Colors.GREEN)
         print_info("Hành cục", str(thienban.hanhCuc))
         print_info("Tên cục", thienban.tenCuc)
-        
-        # Thông tin địa bàn
-        print_section("ĐỊA BÀN (12 CUNG)", Colors.MAGENTA)
-        print_info("Cung Mệnh", str(diaban.cungMenh))
-        print_info("Cung Thân", str(diaban.cungThan))
-        print_info("Cung Nô bộc", str(diaban.cungNoboc))
-        print_info("Cung Tật ách", str(diaban.cungTatAch))
         
         # In chi tiết từng cung địa bàn với chính tinh và phụ tinh
         print_section("CHI TIẾT 12 CUNG ĐỊA BÀN (CHÍNH TINH & PHỤ TINH)", Colors.RED)

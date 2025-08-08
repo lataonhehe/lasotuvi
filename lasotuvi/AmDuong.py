@@ -527,36 +527,31 @@ def timTrangSinh(cucSo):
 
 
 def timHoaLinh(chiNamSinh, gioSinh, gioiTinh, amDuongNamSinh):
-    if chiNamSinh in [3, 7, 11]:
-        khoiCungHoaTinh = 2
-        khoiCungLinhTinh = 4
-    elif chiNamSinh in [1, 5, 9]:
-        khoiCungHoaTinh = 3
-        khoiCungLinhTinh = 11
-    elif chiNamSinh in [6, 10, 2]:
-        khoiCungHoaTinh = 11
-        khoiCungLinhTinh = 4
-    elif chiNamSinh in [12, 4, 8]:
-        khoiCungHoaTinh = 10
-        khoiCungLinhTinh = 11
+    if chiNamSinh in [3, 7, 11]:       # Dần, Ngọ, Tuất
+        khoiCungHoaTinh = 2            # Dần
+        khoiCungLinhTinh = 4           # Mão
+    elif chiNamSinh in [1, 5, 9]:      # Tý, Thìn, Thân
+        khoiCungHoaTinh = 3            # Mão
+        khoiCungLinhTinh = 11          # Tuất
+    elif chiNamSinh in [6, 10, 2]:     # Tị, Dậu, Sửu
+        khoiCungHoaTinh = 4           # Hợi ← FIXED
+        khoiCungLinhTinh = 11           # Thìn ← FIXED
+    elif chiNamSinh in [12, 4, 8]:     # Hợi, Mão, Mùi
+        khoiCungHoaTinh = 10           # Dậu
+        khoiCungLinhTinh = 11          # Tuất
     else:
         raise Exception("Không thể khởi cung tìm Hỏa-Linh")
-    # print khoiCungHoaTinh, khoiCungLinhTinh
 
-    # Khởi tạo biến mặc định
-    viTriHoaTinh = None
-    viTriLinhTinh = None
-
-    if (gioiTinh * amDuongNamSinh) == -1:
-        viTriHoaTinh = dichCung(khoiCungHoaTinh + 1, (-1) * gioSinh)
-        viTriLinhTinh = dichCung(khoiCungLinhTinh - 1, gioSinh)
-    elif (gioiTinh * amDuongNamSinh) == 1:
-        viTriHoaTinh = dichCung(khoiCungHoaTinh - 1, gioSinh)
-        viTriLinhTinh = dichCung(khoiCungLinhTinh + 1, (-1) * gioSinh)
+    # Xác định hướng đi đúng
+    if gioiTinh != amDuongNamSinh:
+        huongHoa = -1
+        huongLinh = 1
     else:
-        # Trường hợp mặc định nếu không thỏa mãn điều kiện nào
-        viTriHoaTinh = dichCung(khoiCungHoaTinh, gioSinh)
-        viTriLinhTinh = dichCung(khoiCungLinhTinh, gioSinh)
+        huongHoa = 1
+        huongLinh = -1
+
+    viTriHoaTinh = dichCung(khoiCungHoaTinh-huongHoa, huongHoa * gioSinh)
+    viTriLinhTinh = dichCung(khoiCungLinhTinh-huongLinh, huongLinh * gioSinh)
 
     return [viTriHoaTinh, viTriLinhTinh]
 
