@@ -38,7 +38,7 @@ class lapThienBan(object):
         self.canNamTen = thienCan[self.canNam]['tenCan']
         self.chiNamTen = diaChi[self.chiNam]['tenChi']
 
-
+        
         canGioSinh, chiGioSinh = canChiGio(self.canNgay, gioSinh)
         if canGioSinh == 0:
             canGioSinh = 10
@@ -61,8 +61,8 @@ class lapThienBan(object):
         self.hanhCuc = nguHanh(cuc)['id']
         self.tenCuc = nguHanh(cuc)['tenCuc']
 
-        self.menhChu = diaChi[self.canNam]['menhChu']
-        self.thanChu = diaChi[self.canNam]['thanChu']
+        self.menhChu = diaChi[self.chiNam]['menhChu']
+        self.thanChu = diaChi[self.chiNam]['thanChu']
 
         self.menh = nguHanhNapAm(self.chiNam, self.canNam)
         menhId = nguHanh(self.menh)['id']

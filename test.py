@@ -44,13 +44,18 @@ def print_info(label, value, color=Colors.GREEN):
 
 def print_cung_info(cung_num, ten_cung, cung_ten, chinh_tinh, phu_tinh, dac_biet=None):
     """Print cung information with better formatting"""
-    print(f"   {Colors.YELLOW}Cung {cung_num:2d}{Colors.END} ({Colors.CYAN}{ten_cung:10s}{Colors.END}): {Colors.GREEN}{cung_ten:8s}{Colors.END}")
-    if chinh_tinh:
-        print(f"           {Colors.BLUE}Chính tinh:{Colors.END} {', '.join(chinh_tinh)}")
+    # Format palace name with special indicators inline
+    palace_display = f"{Colors.CYAN}{ten_cung:10s}{Colors.END}"
+    if dac_biet:
+        special_indicators = f" [{Colors.RED}{', '.join(dac_biet)}{Colors.END}]"
+        palace_display += special_indicators
+    
+    print(f"   {Colors.YELLOW}Cung {cung_num:2d}{Colors.END} ({palace_display}): {Colors.GREEN}{cung_ten:8s}{Colors.END}")
+    if not chinh_tinh:
+        chinh_tinh.append("Vô chính diệu")
+    print(f"           {Colors.BLUE}Chính tinh:{Colors.END} {', '.join(chinh_tinh)}")
     if phu_tinh:
         print(f"           {Colors.CYAN}Phụ tinh:{Colors.END} {', '.join(phu_tinh)}")
-    if dac_biet:
-        print(f"           {Colors.RED}Đặc biệt:{Colors.END} {', '.join(dac_biet)}")
 
 def format_star_with_color(star_info):
     """Format star with ngũ hành color"""
@@ -116,8 +121,6 @@ def inLaSoTuViTongHop(ngay, thang, nam, gio, gioiTinh, ten, duongLich=True, time
         
         # In chi tiết từng cung địa bàn với chính tinh và phụ tinh
         print_section("CHI TIẾT 12 CUNG ĐỊA BÀN (CHÍNH TINH & PHỤ TINH)", Colors.RED)
-        tenCung = ["", "Mệnh", "Phụ mẫu", "Phúc đức", "Điền trạch", "Quan lộc", 
-                    "Nô bộc", "Thiên di", "Tật ách", "Tài bạch", "Tử tức", "Phu thê", "Huynh đệ"]
         
         for i in range(1, 13):
             cung = diaban.thapNhiCung[i]
@@ -149,34 +152,18 @@ def inLaSoTuViTongHop(ngay, thang, nam, gio, gioiTinh, ten, duongLich=True, time
                 dacBiet.append("Triệt")
             
             # In thông tin cung với formatting mới
-            print_cung_info(i, tenCung[i], cung.cungTen, chinhTinh, phuTinh, dacBiet)
+            print_cung_info(i, cung.tenCungChu, cung.cungTen, chinhTinh, phuTinh, dacBiet)
+            
         
         # Thông tin đại hạn và tiểu hạn
-        print_section("THÔNG TIN HẠN", Colors.CYAN)
-        for i in range(1, 13):
-            cung = diaban.thapNhiCung[i]
-            if hasattr(cung, 'cungDaiHan'):
-                print_info(f"Cung {i} - Đại hạn", str(cung.cungDaiHan))
-            if hasattr(cung, 'cungTieuHan'):
-                print_info(f"Cung {i} - Tiểu hạn", cung.cungTieuHan)
+        # print_section("THÔNG TIN HẠN", Colors.CYAN)
+        # for i in range(1, 13):
+        #     cung = diaban.thapNhiCung[i]
+        #     if hasattr(cung, 'cungDaiHan'):
+        #         print_info(f"Cung {i} - Đại hạn", str(cung.cungDaiHan))
+        #     if hasattr(cung, 'cungTieuHan'):
+        #         print_info(f"Cung {i} - Tiểu hạn", cung.cungTieuHan)
         
-        # Thông tin Tuần và Triệt
-        print_section("THÔNG TIN TUẦN VÀ TRIỆT", Colors.RED)
-        tuanCung = []
-        trietCung = []
-        for i in range(1, 13):
-            cung = diaban.thapNhiCung[i]
-            if hasattr(cung, 'tuanTrung') and cung.tuanTrung:
-                tuanCung.append(f"Cung {i} ({tenCung[i]})")
-            if hasattr(cung, 'trietLo') and cung.trietLo:
-                trietCung.append(f"Cung {i} ({tenCung[i]})")
-        
-        if tuanCung:
-            print_info("Tuần", ', '.join(tuanCung))
-        if trietCung:
-            print_info("Triệt", ', '.join(trietCung))
-        if not tuanCung and not trietCung:
-            print_info("Kết quả", "Không có Tuần hoặc Triệt")
         
         print(f"\n{Colors.BOLD}{Colors.GREEN}{'═' * 80}")
         print(f"{'═' * 20} KẾT THÚC LÁ SỐ TỔNG HỢP {'═' * 20}")
@@ -206,8 +193,6 @@ def inLaSoTuViNganGon(ngay, thang, nam, gio, gioiTinh, ten, duongLich=True, time
         
         # 12 cung với chính tinh và phụ tinh
         print_section("12 CUNG ĐỊA BÀN", Colors.BLUE)
-        tenCung = ["", "Mệnh", "Phụ mẫu", "Phúc đức", "Điền trạch", "Quan lộc", 
-                    "Nô bộc", "Thiên di", "Tật ách", "Tài bạch", "Tử tức", "Phu thê", "Huynh đệ"]
         
         for i in range(1, 13):
             cung = diaban.thapNhiCung[i]
@@ -225,7 +210,7 @@ def inLaSoTuViNganGon(ngay, thang, nam, gio, gioiTinh, ten, duongLich=True, time
                         else:
                             phuTinh.append(formatted_star)
             
-            print_cung_info(i, tenCung[i], cung.cungTen, chinhTinh, phuTinh)
+            print_cung_info(i, cung.getTenCungChu(), cung.cungTen, chinhTinh, phuTinh)
         
         print(f"\n{Colors.BOLD}{Colors.GREEN}{'═' * 80}")
         print(f"{'═' * 20} KẾT THÚC LÁ SỐ NGẮN GỌN {'═' * 20}")
@@ -236,18 +221,79 @@ def inLaSoTuViNganGon(ngay, thang, nam, gio, gioiTinh, ten, duongLich=True, time
         import traceback
         traceback.print_exc()
 
-# Thông tin mẫu
-gio = 6
-ngay = 7
-thang = 3
-nam = 2003
-gioiTinh = 1  # 1 = Nam, -1 = Nữ
-ten = "Nguyễn Văn A"
+def test_inLaSoTuViNganGon():
+    test_cases = [
+        {
+            'ngay': 7,
+            'thang': 3, 
+            'nam': 2003,
+            'gio': 6,
+            'gioiTinh': 1,
+            'ten': "Nguyễn Văn A",
+            'duongLich': True,
+            'timeZone': 7
+        },
+        {
+            'ngay': 30,
+            'thang': 7,
+            'nam': 2005, 
+            'gio': 22,
+            'gioiTinh': -1,
+            'ten': "Nguyễn Thị B",
+            'duongLich': True,
+            'timeZone': 7
+        }
+    ]
 
-# Tạo lá số tổng hợp
-inLaSoTuViTongHop(ngay, thang, nam, gio, gioiTinh, ten)
+    for test in test_cases:
+        try:
+            print(f"\nTesting with data: {test}")
+            inLaSoTuViTongHop(
+                test['ngay'],
+                test['thang'], 
+                test['nam'],
+                test['gio'],
+                test['gioiTinh'],
+                test['ten'],
+                test['duongLich'],
+                test['timeZone']
+            )
+            print("✓ Test passed")
+        except Exception as e:
+            print(f"✗ Test failed: {str(e)}")
 
-# print("\n\n" + "="*80 + "\n")
+def test_palace_names():
+    """
+    Test function to show palace names in thapNhiCung
+    """
+    try:
+        # Create a test case
+        ngay, thang, nam, gio, gioiTinh = 7, 3, 2003, 6, 1
+        ten = "Nguyễn Văn A"
+        
+        # Create diaBan
+        diaban = lapDiaBan(diaBan, nn=ngay, tt=thang, nnnn=nam, gioSinh=gio, 
+                           gioiTinh=gioiTinh, duongLich=True, timeZone=7)
+        
+        print_header("THẬP NHỊ CUNG VỚI TÊN CUNG")
+        print_section("12 CUNG ĐỊA BÀN", Colors.BLUE)
+        
+        tenCung = ["", "Mệnh", "Phụ mẫu", "Phúc đức", "Điền trạch", "Quan lộc", 
+                    "Nô bộc", "Thiên di", "Tật ách", "Tài bạch", "Tử tức", "Phu thê", "Huynh đệ"]
+        
+        for i in range(1, 13):
+            cung = diaban.thapNhiCung[i]
+            palace_name = cung.getTenCungChu()
+            print(f"   {Colors.YELLOW}Cung {i:2d}{Colors.END}: {Colors.CYAN}{cung.cungTen:8s}{Colors.END} - {Colors.GREEN}{palace_name}{Colors.END}")
+        
+        print(f"\n{Colors.BOLD}{Colors.GREEN}{'═' * 80}")
+        print(f"{'═' * 20} KẾT THÚC TEST TÊN CUNG {'═' * 20}")
+        print(f"{'═' * 80}{Colors.END}")
+        
+    except Exception as e:
+        print(f"{Colors.RED}❌ Lỗi khi test tên cung: {e}{Colors.END}")
+        import traceback
+        traceback.print_exc()
 
-# # Tạo lá số ngắn gọn
-# inLaSoTuViNganGon(ngay, thang, nam, gio, gioiTinh, ten)
+test_inLaSoTuViNganGon()
+# test_palace_names()

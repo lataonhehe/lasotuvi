@@ -18,6 +18,7 @@ class cungDiaBan(object):
         self.cungAmDuong = -1 if (self.cungSo % 2 == 0) else 1
         self.cungTen = diaChi[self.cungSo]['tenChi']
         self.cungThan = False
+        self.tenCungChu = None  # Tên cung chủ (Mệnh, Phụ mẫu, Phúc đức, etc.)
 
     def themSao(self, sao):
         dacTinhSao(self.cungSo, sao)
@@ -26,6 +27,7 @@ class cungDiaBan(object):
 
     def cungChu(self, tenCungChu):
         self.cungChu = tenCungChu
+        self.tenCungChu = tenCungChu  # Store the palace name
         return self
 
     def daiHan(self, daiHan):
@@ -44,6 +46,10 @@ class cungDiaBan(object):
 
     def anTriet(self):
         self.trietLo = True
+
+    def getTenCungChu(self):
+        """Get the palace name (Mệnh, Phụ mẫu, etc.)"""
+        return self.tenCungChu if self.tenCungChu else "Chưa định"
 
 
 class diaBan(object):
@@ -210,8 +216,10 @@ def dacTinhSao(viTriDiaBan, sao):
             "H", "H"],
         6: ["Thiên cơ", "Đ", "Đ", "H", "M", "M", "V", "Đ", "Đ", "V", "M", "M",
             "H"],
-        7: ["Thiên phủ", "O", "Đ", "H", "H", "H", "H", "H", "Đ", "V", "M",
-            "M", "M"],
+        7: ["Thiên phủ", "M", "B", "M", "B", "V", "Đ", "M", "Đ", "M", "B",
+            "V", "Đ"],
+        15: ["Thái tuế", "H", "H", "H", "H", "M", "B", "H", "H", "H", "H",
+            "M", "B"],
         8: ["Thái âm", "V", "Đ", "H", "H", "H", "H", "H", "Đ", "V", "M",
             "M", "M"],
         9: ["Tham lang", "H", "M", "Đ", "H", "V", "H", "H", "M", "Đ", "H",

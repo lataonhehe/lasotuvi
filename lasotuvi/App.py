@@ -40,11 +40,10 @@ def lapDiaBan(diaBan, nn, tt, nnnn, gioSinh, gioiTinh, duongLich, timeZone):
     if duongLich is True:
         nn, tt, nnnn, thangNhuan = \
             ngayThangNam(nn, tt, nnnn, duongLich, timeZone)
+        canGio, gioSinh = canChiGio(canNgay, gioSinh)
     
-    canGio, chiGio = canChiGio(canNgay, gioSinh)
-
     #Tạo địa bàn tháng âm lịch, giờ âm lịch
-    diaBan = diaBan(tt, chiGio)
+    diaBan = diaBan(tt, gioSinh)
 
     amDuongNamSinh = thienCan[canNam]["amDuong"]
     amDuongChiNamSinh = diaChi[chiNam]["amDuong"]
