@@ -1,156 +1,242 @@
-# Lasotuvi - Vietnamese Astrology (Tử vi) Library
+# La So Tu Vi - Lá Số Tử Vi
 
-[![Build Status](https://travis-ci.org/doanguyen/lasotuvi.svg?branch=master)](https://travis-ci.org/doanguyen/lasotuvi)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python 3.6+](https://img.shields.io/badge/python-3.6+-blue.svg)](https://www.python.org/downloads/)
+Thư viện Python để tạo lá số tử vi tổng hợp và ngắn gọn, bao gồm cả FastAPI application.
 
-**Lasotuvi** is an open-source Python library for Vietnamese astrology (Tử vi) calculations. It provides comprehensive tools for creating and analyzing Vietnamese astrological charts based on traditional Vietnamese astrology principles.
+## Cấu trúc Project
 
-## 🌟 Features
-
-- **Complete Tử vi chart generation** - Create full Vietnamese astrological charts
-- **Star placement calculations** - Accurate placement of all major and minor stars
-- **Lunar calendar integration** - Support for both solar and lunar calendar systems
-- **Time zone handling** - Proper time zone calculations for accurate chart generation
-- **Comprehensive star system** - Includes all traditional Vietnamese astrological stars
-- **Modern Python implementation** - Clean, well-documented codebase
-
-## 📦 Installation
-
-### Prerequisites
-- Python 3.6 or higher
-- pip package manager
-
-### Install from PyPI
-```bash
-pip install lasotuvi
+```
+lasotuvi/
+├── lasotuvi/              # Core library
+│   ├── __init__.py
+│   ├── AmDuong.py
+│   ├── App.py
+│   ├── DiaBan.py
+│   ├── Lich_EPHEM.py
+│   ├── Lich_HND.py
+│   ├── Sao.py
+│   └── ThienBan.py
+├── api/                   # FastAPI application
+│   ├── __init__.py
+│   ├── api_la_so_tu_vi.py
+│   ├── run_api.py
+│   ├── test_api.py
+│   ├── requirements_api.txt
+│   └── README_API.md
+├── tests/                 # Unit tests
+├── docs/                  # Documentation
+├── la_so_tu_vi.py        # Core functions
+├── test.py               # Test functions
+├── requirements.txt       # Core dependencies
+└── README.md             # This file
 ```
 
-### Install from source
+## Tính năng chính
+
+### 1. Core Library (`lasotuvi/`)
+- Tính toán can chi năm, tháng, ngày, giờ
+- Xác định bản mệnh, mệnh chủ, thân chủ
+- Tính toán thập nhị cung địa bàn
+- Phân tích chính tinh và phụ tinh
+- Hỗ trợ âm lịch và dương lịch
+
+### 2. Core Functions (`la_so_tu_vi.py`)
+- `tao_la_so_tu_vi()`: Tạo lá số tử vi tổng hợp
+- `tao_la_so_tu_vi_ngan_gon()`: Tạo lá số tử vi ngắn gọn
+- In kết quả với màu sắc và formatting đẹp
+- Trả về dictionary với đầy đủ thông tin
+
+### 3. FastAPI Application (`api/`)
+- REST API để tạo lá số tử vi
+- Validation tự động
+- Documentation với Swagger UI
+- Error handling chuẩn HTTP
+- Health check endpoint
+
+## Cài đặt
+
+### 1. Cài đặt dependencies cơ bản
 ```bash
-git clone https://github.com/doanguyen/lasotuvi.git
-cd lasotuvi
-pip install -e .
+pip install -r requirements.txt
 ```
 
-## 🚀 Quick Start
+### 2. Cài đặt dependencies cho API (tùy chọn)
+```bash
+cd api
+pip install -r requirements_api.txt
+```
+
+## Sử dụng
+
+### 1. Sử dụng Core Functions
 
 ```python
-from lasotuvi.App import lapDiaBan
-from lasotuvi.DiaBan import DiaBan
+from la_so_tu_vi import tao_la_so_tu_vi, tao_la_so_tu_vi_ngan_gon
 
-# Create a chart for a person born on:
-# Date: 15th day, 3rd month, 1990
-# Time: 14:30 (2:30 PM)
-# Gender: Male (1 for male, 0 for female)
-# Calendar: Solar calendar (True for solar, False for lunar)
-# Timezone: UTC+7
-
-diaBan = lapDiaBan(
-    DiaBan, 
-    nn=15,           # Day
-    tt=3,            # Month  
-    nnnn=1990,       # Year
-    gioSinh=14.5,    # Birth hour (24-hour format)
-    gioiTinh=1,      # Gender (1=male, 0=female)
-    duongLich=True,  # Calendar type (True=solar, False=lunar)
-    timeZone=7       # Timezone offset
+# Tạo lá số tổng hợp
+ket_qua = tao_la_so_tu_vi(
+    ngay=7, thang=3, nam=2003, gio=6,
+    gioiTinh=1, ten="Nguyễn Văn A"
 )
 
-# Access chart information
-print(f"Life Palace: {diaBan.cungMenh}")
-print(f"Career Palace: {diaBan.cungQuan}")
-print(f"Wealth Palace: {diaBan.cungTai}")
+# Tạo lá số ngắn gọn
+ket_qua_ngan_gon = tao_la_so_tu_vi_ngan_gon(
+    ngay=30, thang=7, nam=2005, gio=22,
+    gioiTinh=-1, ten="Nguyễn Thị B"
+)
 ```
 
-## 📚 Documentation
+### 2. Sử dụng FastAPI
 
-### Core Components
+**Chạy server:**
+```bash
+# Cách 1: Sử dụng script
+cd api
+python run_api.py
 
-- **`App.py`** - Main application logic for chart generation
-- **`DiaBan.py`** - Chart structure and palace calculations
-- **`AmDuong.py`** - Yin-Yang and Five Elements calculations
-- **`Sao.py`** - Star placement and interpretation
-- **`ThienBan.py`** - Heavenly chart calculations
-- **`Lich_EPHEM.py`** - Ephemeris calculations
-- **`Lich_HND.py`** - Vietnamese calendar conversions
+# Cách 2: Chạy trực tiếp
+cd api
+python api_la_so_tu_vi.py
 
-### Key Functions
+# Cách 3: Từ thư mục gốc
+python api/api_la_so_tu_vi.py
+```
 
-#### Chart Generation
+**Truy cập API:**
+- Server: http://localhost:8000
+- Documentation: http://localhost:8000/docs
+- ReDoc: http://localhost:8000/redoc
+
+**Test API:**
+```bash
+cd api
+python test_api.py
+```
+
+## API Endpoints
+
+### POST `/la-so-tu-vi/tong-hop`
+Tạo lá số tử vi tổng hợp với đầy đủ thông tin.
+
+### POST `/la-so-tu-vi/ngan-gon`
+Tạo lá số tử vi ngắn gọn với thông tin cơ bản.
+
+### GET `/health`
+Kiểm tra trạng thái API.
+
+### GET `/`
+Thông tin cơ bản về API.
+
+## Tham số API
+
+| Tham số | Kiểu | Bắt buộc | Mô tả |
+|---------|------|----------|-------|
+| ngay | int | ✅ | Ngày sinh (1-31) |
+| thang | int | ✅ | Tháng sinh (1-12) |
+| nam | int | ✅ | Năm sinh (1900-2100) |
+| gio | int | ✅ | Giờ sinh (0-23) |
+| gioi_tinh | int | ✅ | Giới tính (1: Nam, -1: Nữ) |
+| ten | string | ✅ | Họ tên |
+| duong_lich | boolean | ❌ | True nếu dương lịch (mặc định: True) |
+| time_zone | int | ❌ | Múi giờ (-12 đến 14, mặc định: 7) |
+
+## Ví dụ sử dụng API
+
+### cURL
+```bash
+curl -X POST "http://localhost:8000/la-so-tu-vi/tong-hop" \
+     -H "Content-Type: application/json" \
+     -d '{
+         "ngay": 7,
+         "thang": 3,
+         "nam": 2003,
+         "gio": 6,
+         "gioi_tinh": 1,
+         "ten": "Nguyễn Văn A",
+         "duong_lich": true,
+         "time_zone": 7
+     }'
+```
+
+### Python
 ```python
-lapDiaBan(diaBan, nn, tt, nnnn, gioSinh, gioiTinh, duongLich, timeZone)
+import requests
+
+data = {
+    "ngay": 7,
+    "thang": 3,
+    "nam": 2003,
+    "gio": 6,
+    "gioi_tinh": 1,
+    "ten": "Nguyễn Văn A",
+    "duong_lich": True,
+    "time_zone": 7
+}
+
+response = requests.post("http://localhost:8000/la-so-tu-vi/tong-hop", json=data)
+if response.status_code == 200:
+    la_so = response.json()
+    print(f"Lá số của {la_so['thong_tin_ca_nhan']['ho_ten']}")
+    print(f"Mệnh: {la_so['menh']['ban_menh']}")
 ```
-Generates a complete Tử vi chart with all stars and palaces.
 
-#### Star Placement
-```python
-# Example: Place Tử vi star
-viTriTuVi = timTuVi(cucSo, nn)
-diaBan.nhapSao(viTriTuVi, saoTuVi)
+## Testing
+
+### Test Core Functions
+```bash
+python test.py
 ```
 
-## 🧪 Testing
+### Test API
+```bash
+cd api
+python test_api.py
+```
 
-Run the test suite to ensure everything works correctly:
-
+### Test Unit Tests
 ```bash
 python -m pytest tests/
 ```
 
-## 📁 Project Structure
+## Documentation
 
-```
-lasotuvi/
-├── lasotuvi/           # Main library package
-│   ├── __init__.py
-│   ├── App.py         # Main application logic
-│   ├── AmDuong.py     # Yin-Yang calculations
-│   ├── DiaBan.py      # Chart structure
-│   ├── Sao.py         # Star definitions
-│   ├── ThienBan.py    # Heavenly chart
-│   ├── Lich_EPHEM.py  # Ephemeris
-│   └── Lich_HND.py    # Vietnamese calendar
-├── tests/             # Test suite
-├── docs/              # Documentation
-├── requirements.txt    # Dependencies
-└── setup.py          # Package configuration
-```
+- **API Documentation**: [api/README_API.md](api/README_API.md)
+- **Core Library**: [docs/](docs/)
+- **Swagger UI**: http://localhost:8000/docs (khi chạy API)
 
-## 🔗 Related Projects
+## Tính năng nổi bật
 
-- **[lasotuvi-django](https://github.com/doanguyen/lasotuvi-django)** - Django web application frontend for lasotuvi
-- **[lasotuvi-api](https://github.com/doanguyen/lasotuvi-api)** - REST API for lasotuvi
+### 1. Core Library
+- ✅ Tính toán chính xác can chi
+- ✅ Xác định bản mệnh và mệnh chủ
+- ✅ Phân tích thập nhị cung
+- ✅ Hỗ trợ âm lịch và dương lịch
+- ✅ Màu sắc theo ngũ hành
 
-## 📖 Tutorial Video
+### 2. FastAPI Application
+- ✅ REST API chuẩn
+- ✅ Validation tự động
+- ✅ Documentation tự động
+- ✅ Error handling
+- ✅ Health check
+- ✅ Logging
 
-[![Tutorial](http://i.vimeocdn.com/video/717548888_640.jpg)](https://vimeo.com/283303258 "Tutorial")
+### 3. Testing
+- ✅ Unit tests
+- ✅ API tests
+- ✅ Integration tests
 
-## 🤝 Contributing
+## License
 
-We welcome contributions! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+MIT License - xem file [LICENSE](LICENSE) để biết thêm chi tiết.
 
-### Development Setup
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+## Contributing
 
-## 📄 License
+1. Fork project
+2. Tạo feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to branch (`git push origin feature/AmazingFeature`)
+5. Tạo Pull Request
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## Support
 
-## 👨‍💻 Author
-
-**doanguyen** - [dungnv2410@gmail.com](mailto:dungnv2410@gmail.com)
-
-## 🙏 Acknowledgments
-
-- Traditional Vietnamese astrology masters and scholars
-- The open-source community for inspiration and tools
-- Contributors and users of the lasotuvi project
-
----
-
-**Note**: This library is for educational and cultural preservation purposes. Vietnamese astrology (Tử vi) is a traditional cultural practice and should be approached with respect for its cultural significance.
+Nếu có vấn đề hoặc câu hỏi, vui lòng tạo issue trên GitHub repository.
